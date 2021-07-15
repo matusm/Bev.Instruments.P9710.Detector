@@ -1,0 +1,129 @@
+            StreamWriter sw = new StreamWriter("Dump01.txt", true);
+            sw.WriteLine($"InstrumentID: {device.InstrumentID}");
+            sw.WriteLine($"DetectorID:   {device.DetectorID}");
+            sw.WriteLine();
+
+            device.WriteMagicString();
+            device.WriteSecretString("BEV UMBB-300 2021    ");
+            device.Query("RA9957");
+
+
+            //for (int i = 9999; i >= 0; i--)
+            //{
+            //    Prompt($"RA{i}");
+            //    string stAnswer = device.Query("ST");
+            //    string line = $"{i,4} -> '{stAnswer}'";
+            //    Console.WriteLine(line);
+            //    sw.WriteLine(line);
+            //    sw.Flush();
+            //}
+            sw.Close();
+
+
+
+            //            device.WriteMagicString();
+            //            device.WriteSecretString("GO2000            ");
+
+            byte[] bytes = {
+            0x50,
+            0x54,
+            0x39,
+            0x36,
+            0x31,
+            0x30,
+            0xB4,
+            0x11,
+            0x00,
+            0x00,
+            0x00,
+            0xFF,
+            0xFF,
+            0xFF,
+            0x00,
+            0x00,
+            0x47,
+            0x4F,
+            0x32,
+            0x30,
+            0x30,
+            0x30,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x20,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x56,
+            0x4C,
+            0x8B,
+            0xD1,
+            0x06,
+            0x0F,
+            0x30,
+            0x31,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00,
+            0x00
+            
+            };
+
+            device.WriteBytesToDetectorData(bytes, 0);
+
+            device.WriteSecretString("BEV UMBB-300         ");
+
+            Prompt("SE64");
+            
+            
+            
+            
+0 W
+1 W/m2
+2 W/sr
+3 W/m2/sr 
+4 lm 
+5 lx 
+6 cd 
+7 cd/m2 
+8 MED/h 
+9 mol/m2/s 
+10 A 
+11 cdsr 
+12 lm/sr 
+13 lm/m2 
+14 pc 
+15 fc 
+16 E/m2
+17 W/cm2 
+18 W/cm2*sr
+19 lm/cm2 
+20 cdsr/m2 
+21 fL 
+22 sb 
+23 L 
+24 nit 
+
