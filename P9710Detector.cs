@@ -67,12 +67,33 @@ namespace Bev.Instruments.P9710.Detector
             if (serialNumber < 0) return;
             if (serialNumber >= 0xFFFF) return;
             byte[] bytes = BitConverter.GetBytes(serialNumber);
-            if (BitConverter.IsLittleEndian) 
+            if (!BitConverter.IsLittleEndian) 
                 Array.Reverse(bytes);
             SetPointer(6);
             Query($"SC{bytes[0]}");
             Query($"SC{bytes[1]}");
         }
+
+        public void WriteCalibrationFactorToRam(double factor)
+        {
+            if (factor < 0)
+            {
+                factor = Math.Abs(factor);
+                // TODO sign flag
+            }
+
+            // TODO >= 1.00001
+
+            double normFactor = 65535 / (factor * 0.999985);
+            int integerFactor = (int)Math.Round(normFactor);
+
+            byte[] bytes = BitConverter.GetBytes(integerFactor);
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+
+
+        }
+
 
         public void ClearDetectorRam()
         {
