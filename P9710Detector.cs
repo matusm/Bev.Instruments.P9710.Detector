@@ -74,24 +74,25 @@ namespace Bev.Instruments.P9710.Detector
             Query($"SC{bytes[1]}");
         }
 
-        public void WriteCalibrationFactorToRam(double factor)
+        public void WriteCalibrationFactorToRam(double factorMantissa)
         {
-            if (factor < 0)
+            if (factorMantissa < 0)
             {
-                factor = Math.Abs(factor);
-                // TODO sign flag
+                factorMantissa = Math.Abs(factorMantissa);
+                // TODO set sign flag
             }
-
-            // TODO >= 1.00001
-
-            double normFactor = 65535 / (factor * 0.999985);
+            if (factorMantissa < 1.00001)
+            {
+                // TODO
+                return;
+            }
+            double normFactor = 65535 / (factorMantissa * 0.999985);
             int integerFactor = (int)Math.Round(normFactor);
 
             byte[] bytes = BitConverter.GetBytes(integerFactor);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
-
-
+            // TODO something
         }
 
 
