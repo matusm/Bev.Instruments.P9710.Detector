@@ -1,12 +1,12 @@
 InstrumentID: P9710-521 V5.6 SN:1875 @ COM5
 DetectorID:   VL__ SN:52365 (GO2000)
 
-   0 0x000 ->  80 0x50 'P'  P - start magic string, length 6
+   0 0x000 ->  80 0x50 'P'  P - start of magic string, length 6
    1 0x001 ->  84 0x54 'T'  T
    2 0x002 ->  57 0x39 '9'  9
    3 0x003 ->  54 0x36 '6'  6 
    4 0x004 ->  49 0x31 '1'  1 
-   5 0x005 ->  48 0x30 '0'  0 - end magic string
+   5 0x005 ->  48 0x30 '0'  0 - end of magic string
    6 0x006 -> 141 0x8D '' serial number LSB
    7 0x007 -> 204 0xCC 'Ì' serial number MSB
    8 0x008 ->   0 0x00 ' '
@@ -17,7 +17,7 @@ DetectorID:   VL__ SN:52365 (GO2000)
   13 0x00D -> 255 0xFF 'ÿ'
   14 0x00E ->   0 0x00 ' '
   15 0x00F ->   0 0x00 ' '
-  16 0x010 ->  71 0x47 'G'  G - start secret string, length 6
+  16 0x010 ->  71 0x47 'G'  G - start of secret string, length 6
   17 0x011 ->  79 0x4F 'O'  O 
   18 0x012 ->  50 0x32 '2'  2
   19 0x013 ->  48 0x30 '0'  0
@@ -32,7 +32,7 @@ DetectorID:   VL__ SN:52365 (GO2000)
   28 0x01C ->  32 0x20 ' '  _
   29 0x01D ->  32 0x20 ' '  _
   30 0x01E ->  32 0x20 ' '  _
-  31 0x01F ->  32 0x20 ' '  _ - end secret string
+  31 0x01F ->  32 0x20 ' '  _ - end of secret string
   32 0x020 ->   0 0x00 ' '
   33 0x021 ->   0 0x00 ' '
   34 0x022 ->   0 0x00 ' '
@@ -51,7 +51,7 @@ DetectorID:   VL__ SN:52365 (GO2000)
   47 0x02F ->   0 0x00 ' '
   48 0x030 ->  86 0x56 'V'  detector name, 1. letter
   49 0x031 ->  76 0x4C 'L'  detector name, 2. letter
-  50 0x032 -> 159 0x9F '' calibration factor LSB
+  50 0x032 -> 159 0x9F ''  calibration factor LSB
   51 0x033 ->  46 0x2E '.'  calibration factor MSB
   52 0x034 ->   7 0x07 ''  calibration factor exponent
   53 0x035 ->  11 0x0B ''  Bit pattern, flag, unit, sign calibration factor
