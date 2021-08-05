@@ -20,46 +20,9 @@ namespace Bev.Instruments.P9710.Detector
 
         public string DevicePort { get; }
 
-        public void WriteSecretStringToRam(string stringToWrite)
-        {
-            stringToWrite=stringToWrite.PadRight(16);
-            string truncated = stringToWrite.Substring(0, 16);
-            WriteStringToRam(truncated, 16); // this 16 is different from the former ones
-        }
-
         public void WriteIdentificationStringToRam()
         {
             WriteStringToRam("PT9610", 0);
-        }
-
-        public void WriteStringToRam(string stringToWrite, int pointer)
-        {
-            if (string.IsNullOrWhiteSpace(stringToWrite))
-                return;
-            byte[] bytes = Encoding.ASCII.GetBytes(stringToWrite);
-            WriteBytesToRam(bytes, pointer);
-        }
-
-        public void WriteBytesToRam(byte[] bytes, int pointer)
-        {
-            if (bytes == null)
-                return;
-            if (bytes.Length == 0)
-                return;
-            SetPointer(pointer);
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                Query($"SC{bytes[i]}");
-            }
-        }
-
-        public void WriteDetectorNameToRam(string name)
-        {
-            name = name.PadRight(4);
-            string firstHalf = name.Substring(0, 2);
-            string secondHalf = name.Substring(2, 2);
-            WriteStringToRam(firstHalf, 48);
-            WriteStringToRam(secondHalf, 54);
         }
 
         public void WriteSerialNumberToRam(int serialNumber)
@@ -73,6 +36,22 @@ namespace Bev.Instruments.P9710.Detector
             SetPointer(6);
             Query($"SC{bytes[0]}");
             Query($"SC{bytes[1]}");
+        }
+
+        public void WriteCustomStringToRam(string stringToWrite)
+        {
+            stringToWrite = stringToWrite.PadRight(16);
+            string truncated = stringToWrite.Substring(0, 16);
+            WriteStringToRam(truncated, 16); // this 16 is different from the former ones
+        }
+
+        public void WriteDetectorNameToRam(string name)
+        {
+            name = name.PadRight(4);
+            string firstHalf = name.Substring(0, 2);
+            string secondHalf = name.Substring(2, 2);
+            WriteStringToRam(firstHalf, 48);
+            WriteStringToRam(secondHalf, 54);
         }
 
         public void WriteCalibrationFactorToRam(double mantissa, int exponent)
@@ -97,18 +76,19 @@ namespace Bev.Instruments.P9710.Detector
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
 
-            byte flags = byte.Parse(Query($"GC53"));
+            byte flags = GetByte(53);
             if (factorIsNegative)
             {
                 // set bit7 to 1 and leave the rest unchanged
-                flags |= 0x80;
+                flags |= 0b_1000_0000;
             }
             else
             {
                 // set bit7 to 0 and leave the rest unchanged
-                flags &= 0x7F;
+                flags &= 0b_0111_1111;
             }
-
+            // set bit0 to 1 and leave the rest unchanged
+            flags |= 0b_0000_0001;
             SetPointer(50);
             Query($"SC{bytes[0]}");
             Query($"SC{bytes[1]}");
@@ -116,6 +96,18 @@ namespace Bev.Instruments.P9710.Detector
             Query($"SC{flags}");
         }
 
+        public void WriteUnitToRam(int unitCode)
+        {
+            if (unitCode < 0)
+                return;
+            if (unitCode > 24)
+                return;
+            byte flags = GetByte(53);
+            // set bit0 to 1 and leave the rest unchanged
+            flags |= 0b_0000_0001;
+            byte code = (byte)(unitCode << 1);
+            //TODO
+        }
 
         public void ClearDetectorRam()
         {
@@ -144,15 +136,45 @@ namespace Bev.Instruments.P9710.Detector
             return bytes;
         }
 
-
-
-
         // dangerous method!
-        public void LoadRamToEeprom()
+        public void SaveRamToEeprom()
         {
             UnlockDevice();
             _ = Query($"SE{blockSize}");
             LockDevice();
+        }
+
+
+
+
+        private byte GetByte(int pointer)
+        {
+            if (pointer < 0)
+                return 0;
+            if (pointer > 0x800)
+                return 0;
+            return byte.Parse(Query($"GC{pointer}"));
+        }
+
+        private void WriteStringToRam(string stringToWrite, int pointer)
+        {
+            if (string.IsNullOrWhiteSpace(stringToWrite))
+                return;
+            byte[] bytes = Encoding.ASCII.GetBytes(stringToWrite);
+            WriteBytesToRam(bytes, pointer);
+        }
+
+        private void WriteBytesToRam(byte[] bytes, int pointer)
+        {
+            if (bytes == null)
+                return;
+            if (bytes.Length == 0)
+                return;
+            SetPointer(pointer);
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                Query($"SC{bytes[i]}");
+            }
         }
 
         private void UnlockDevice()
