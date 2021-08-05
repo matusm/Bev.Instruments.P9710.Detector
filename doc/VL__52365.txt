@@ -1,12 +1,12 @@
 InstrumentID: P9710-521 V5.6 SN:1875 @ COM5
 DetectorID:   VL__ SN:52365 (GO2000)
 
-   0 0x000 ->  80 0x50 'P'  P - start of magic string, length 6
+   0 0x000 ->  80 0x50 'P'  P - start of identification string, length 6
    1 0x001 ->  84 0x54 'T'  T
    2 0x002 ->  57 0x39 '9'  9
    3 0x003 ->  54 0x36 '6'  6 
    4 0x004 ->  49 0x31 '1'  1 
-   5 0x005 ->  48 0x30 '0'  0 - end of magic string
+   5 0x005 ->  48 0x30 '0'  0 - end of identification string
    6 0x006 -> 141 0x8D '?'  serial number LSB
    7 0x007 -> 204 0xCC '?'  serial number MSB
    8 0x008 ->   0 0x00 ' '

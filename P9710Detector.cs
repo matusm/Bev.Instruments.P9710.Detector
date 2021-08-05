@@ -27,7 +27,7 @@ namespace Bev.Instruments.P9710.Detector
             WriteStringToRam(truncated, 16); // this 16 is different from the former ones
         }
 
-        public void WriteMagicStringToRam()
+        public void WriteIdentificationStringToRam()
         {
             WriteStringToRam("PT9610", 0);
         }
@@ -69,30 +69,50 @@ namespace Bev.Instruments.P9710.Detector
             byte[] bytes = BitConverter.GetBytes(serialNumber);
             if (!BitConverter.IsLittleEndian) 
                 Array.Reverse(bytes);
+            if (bytes.Length < 2) return;
             SetPointer(6);
             Query($"SC{bytes[0]}");
             Query($"SC{bytes[1]}");
         }
 
-        public void WriteCalibrationFactorToRam(double factorMantissa)
+        public void WriteCalibrationFactorToRam(double mantissa)
         {
-            if (factorMantissa < 0)
+            bool factorIsNegative = false;
+            if (mantissa < 0)
             {
-                factorMantissa = Math.Abs(factorMantissa);
-                // TODO set sign flag
+                mantissa = Math.Abs(mantissa);
+                factorIsNegative = true;
             }
-            if (factorMantissa < 1.00001)
+            if (mantissa < 1.00001)
             {
                 // TODO
                 return;
             }
-            double normFactor = 65535 / (factorMantissa * 0.999985);
+            double normFactor = 65535 / (mantissa * 0.999_985);
             int integerFactor = (int)Math.Round(normFactor);
 
             byte[] bytes = BitConverter.GetBytes(integerFactor);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
-            // TODO something
+
+            // TODO take care of sign and of exponent
+            byte expByte = 0x00;
+            byte flags = 0x00;
+
+            if (factorIsNegative)
+            {
+                flags = (byte)(flags | 0x80);
+            }
+            else
+            {
+                flags = (byte)(flags & 0x3F);
+            }
+
+            SetPointer(50);
+            Query($"SC{bytes[0]}");
+            Query($"SC{bytes[1]}");
+            Query($"SC{expByte}");
+            Query($"SC{flags}");
         }
 
 
