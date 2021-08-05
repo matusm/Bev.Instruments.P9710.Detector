@@ -75,8 +75,10 @@ namespace Bev.Instruments.P9710.Detector
             Query($"SC{bytes[1]}");
         }
 
-        public void WriteCalibrationFactorToRam(double mantissa)
+        public void WriteCalibrationFactorToRam(double mantissa, int exponent)
         {
+            byte expByte = (byte)(-exponent - 3); // -10 -> 7
+
             bool factorIsNegative = false;
             if (mantissa < 0)
             {
@@ -88,24 +90,23 @@ namespace Bev.Instruments.P9710.Detector
                 // TODO
                 return;
             }
-            double normFactor = 65535 / (mantissa * 0.999_985);
-            int integerFactor = (int)Math.Round(normFactor);
+            double normalizedFactor = 65535 / (mantissa * 0.999_985);
+            int integerFactor = (int)Math.Round(normalizedFactor);
 
             byte[] bytes = BitConverter.GetBytes(integerFactor);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
 
-            // TODO take care of sign and of exponent
-            byte expByte = 0x00;
-            byte flags = 0x00;
-
+            byte flags = byte.Parse(Query($"GC53"));
             if (factorIsNegative)
             {
-                flags = (byte)(flags | 0x80);
+                // set bit7 to 1 and leave the rest unchanged
+                flags |= 0x80;
             }
             else
             {
-                flags = (byte)(flags & 0x3F);
+                // set bit7 to 0 and leave the rest unchanged
+                flags &= 0x7F;
             }
 
             SetPointer(50);
