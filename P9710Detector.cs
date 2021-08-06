@@ -57,8 +57,8 @@ namespace Bev.Instruments.P9710.Detector
         public void WriteCalibrationFactorToRam(double mantissa, int exponent)
         {
             byte expByte = (byte)(-exponent - 3); // -10 -> 7
-
             bool factorIsNegative = false;
+
             if (mantissa < 0)
             {
                 mantissa = Math.Abs(mantissa);
@@ -69,6 +69,12 @@ namespace Bev.Instruments.P9710.Detector
                 // TODO
                 return;
             }
+            if (mantissa > 9.9999)
+            {
+                // TODO
+                return;
+            }
+
             double normalizedFactor = 65535 / (mantissa * 0.999_985);
             int integerFactor = (int)Math.Round(normalizedFactor);
 
@@ -105,8 +111,13 @@ namespace Bev.Instruments.P9710.Detector
             byte flags = GetByte(53);
             // set bit0 to 1 and leave the rest unchanged
             flags |= 0b_0000_0001;
+            // set the unit bits to 0 and leave the rest unchanged
+            flags &= 0b_1000_0001;
+            // set the unit bits and leave the rest unchanged
             byte code = (byte)(unitCode << 1);
-            //TODO
+            flags |= code;
+            SetPointer(53);
+            Query($"SC{flags}");
         }
 
         public void ClearDetectorRam()
@@ -124,18 +135,11 @@ namespace Bev.Instruments.P9710.Detector
             return DumpDetectorRam(blockSize);
         }
 
-        private byte[] DumpDetectorRam(int size)
+        public string RamToString(byte[] ram)
         {
-            if (size < 0) size = 0;
-            if (size > 0x800) size = 0x800;
-            byte[] bytes = new byte[size];
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = byte.Parse(Query($"GC{i}"));
-            }
-            return bytes;
-        }
 
+        }
+        
         // dangerous method!
         public void SaveRamToEeprom()
         {
@@ -146,6 +150,17 @@ namespace Bev.Instruments.P9710.Detector
 
 
 
+        private byte[] DumpDetectorRam(int size)
+        {
+            if (size < 0) size = 0;
+            if (size > 0x800) size = 0x800;
+            byte[] bytes = new byte[size];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = GetByte(i);
+            }
+            return bytes;
+        }
 
         private byte GetByte(int pointer)
         {
