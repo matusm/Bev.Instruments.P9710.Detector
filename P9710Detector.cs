@@ -162,8 +162,8 @@ namespace Bev.Instruments.P9710.Detector
                 string asBinary = Convert.ToString(ram[i], 2).PadLeft(8, '0');
                 char asChar = Convert.ToChar(ram[i]);
                 if (ram[i] < 32 || ram[i] > 126)
-                    asChar = '.';
-                sb.AppendLine($"{i:4} {i:X3} -> {ram[i]:3} {ram[i]:X2} {asBinary} {asChar}");
+                    asChar = ' ';
+                sb.AppendLine($"{i,4} {i:X3} -> {ram[i],3} {ram[i]:X2} {asBinary} '{asChar}'");
             }
             return sb.ToString();
         }
