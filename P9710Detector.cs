@@ -119,12 +119,12 @@ namespace Bev.Instruments.P9710.Detector
             WriteBytesToRam(bytes, 0);
         }
 
-        public byte[] GetDetectorRam()
+        public byte[] DumpDetectorRam()
         {
-            return GetDetectorRam(blockSize);
+            return DumpDetectorRam(blockSize);
         }
 
-        public byte[] GetDetectorRam(int size)
+        private byte[] DumpDetectorRam(int size)
         {
             if (size < 0) size = 0;
             if (size > 0x800) size = 0x800;

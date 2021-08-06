@@ -17,7 +17,7 @@ DetectorID:   VL__ SN:52365 (GO2000)
   13 0x00D -> 255 0xFF 'ÿ'
   14 0x00E ->   0 0x00 ' '
   15 0x00F ->   0 0x00 ' '
-  16 0x010 ->  71 0x47 'G'  G - start of secret string, length 16
+  16 0x010 ->  71 0x47 'G'  G - start of custom string, length 16
   17 0x011 ->  79 0x4F 'O'  O 
   18 0x012 ->  50 0x32 '2'  2
   19 0x013 ->  48 0x30 '0'  0
@@ -32,7 +32,7 @@ DetectorID:   VL__ SN:52365 (GO2000)
   28 0x01C ->  32 0x20 ' '  _
   29 0x01D ->  32 0x20 ' '  _
   30 0x01E ->  32 0x20 ' '  _
-  31 0x01F ->  32 0x20 ' '  _ - end of secret string
+  31 0x01F ->  32 0x20 ' '  _ - end of custom string
   32 0x020 ->   0 0x00 ' '
   33 0x021 ->   0 0x00 ' '
   34 0x022 ->   0 0x00 ' '
