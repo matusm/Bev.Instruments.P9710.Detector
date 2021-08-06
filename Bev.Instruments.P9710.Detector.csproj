@@ -31,6 +31,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DetectorStatus.cs" />
     <Compile Include="P9710Detector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
