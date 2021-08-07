@@ -54,7 +54,61 @@ namespace Bev.Instruments.P9710.Detector
             WriteStringToRam(secondHalf, 54);
         }
 
-        public void WriteCalibrationFactorToRam(double mantissa, int exponent)
+        public void WriteCalibrationFactorToRam(double factor)
+        {
+            double exp = Math.Floor(Math.Log10(Math.Abs(factor)));
+            double mantissa = factor / Math.Pow(10, exp);
+            int exponent = (int)exp;
+            WriteCalibrationFactorToRam(mantissa, exponent);
+        }
+
+        public void WriteUnitToRam(int unitCode)
+        {
+            if (unitCode < 0)
+                return;
+            if (unitCode > 24)
+                return;
+            byte flags = GetByte(53);
+            // set bit0 to 1 and leave the rest unchanged
+            flags |= 0b_0000_0001;
+            // set the unit bits to 0 and leave the rest unchanged
+            flags &= 0b_1000_0001;
+            // set the unit bits and leave the rest unchanged
+            byte code = (byte)(unitCode << 1);
+            flags |= code;
+            SetPointer(53);
+            Query($"SC{flags}");
+        }
+
+        public void ClearDetectorRam()
+        {
+            byte[] bytes = new byte[blockSize];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = 0xFF;
+            }
+            WriteBytesToRam(bytes, 0);
+        }
+
+        public byte[] DumpDetectorRam()
+        {
+            return DumpDetectorRam(blockSize);
+        }
+
+        public string RamToString()
+        {
+            return RamToString(DumpDetectorRam());
+        }
+        
+        // dangerous method!
+        public void SaveRamToEeprom()
+        {
+            UnlockDevice();
+            _ = Query($"SE{blockSize}");
+            LockDevice();
+        }
+
+        private void WriteCalibrationFactorToRam(double mantissa, int exponent)
         {
             byte expByte = (byte)(-exponent - 3); // -10 -> 7
             bool factorIsNegative = false;
@@ -101,55 +155,6 @@ namespace Bev.Instruments.P9710.Detector
             Query($"SC{expByte}");
             Query($"SC{flags}");
         }
-
-        public void WriteUnitToRam(int unitCode)
-        {
-            if (unitCode < 0)
-                return;
-            if (unitCode > 24)
-                return;
-            byte flags = GetByte(53);
-            // set bit0 to 1 and leave the rest unchanged
-            flags |= 0b_0000_0001;
-            // set the unit bits to 0 and leave the rest unchanged
-            flags &= 0b_1000_0001;
-            // set the unit bits and leave the rest unchanged
-            byte code = (byte)(unitCode << 1);
-            flags |= code;
-            SetPointer(53);
-            Query($"SC{flags}");
-        }
-
-        public void ClearDetectorRam()
-        {
-            byte[] bytes = new byte[blockSize];
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = 0xFF;
-            }
-            WriteBytesToRam(bytes, 0);
-        }
-
-        public byte[] DumpDetectorRam()
-        {
-            return DumpDetectorRam(blockSize);
-        }
-
-        public string RamToString()
-        {
-            return RamToString(DumpDetectorRam());
-        }
-
-
-        
-        // dangerous method!
-        public void SaveRamToEeprom()
-        {
-            UnlockDevice();
-            _ = Query($"SE{blockSize}");
-            LockDevice();
-        }
-
 
         private string RamToString(byte[] ram)
         {
