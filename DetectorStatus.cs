@@ -1,13 +1,12 @@
-﻿
-namespace Bev.Instruments.P9710.Detector
+﻿namespace Bev.Instruments.P9710.Detector
 {
     public class DetectorStatus
     {
-        public string CustomString { get; set; }
         public string DetectorName { get; set; }
         public int SerialNumber { get; set; }
         public double CalibrationFactor { get; set; }
         public int PhotometricUnit { get; set; }
+        public string CustomString { get; set; }
         public string PhotometricUnitSymbol => CodeToString(PhotometricUnit);
 
         private string CodeToString(int photometricUnit)
