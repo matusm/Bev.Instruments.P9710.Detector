@@ -11,6 +11,7 @@ namespace Bev.Instruments.P9710.Detector
         private const int blockSize = 64;
         private readonly SerialPort comPort;
         private const int waitOnClose = 100;
+        private char nonPrinteableChar = ' ';
 
         public P9710Detector(string portName)
         {
@@ -144,9 +145,8 @@ namespace Bev.Instruments.P9710.Detector
                 return;
             }
 
-            double normalizedFactor = 65535 / (mantissa * 0.999_985);
+            double normalizedFactor = 0xFFFF / (mantissa * 0.999_985);
             int integerFactor = (int)Math.Round(normalizedFactor);
-
             byte[] bytes = BitConverter.GetBytes(integerFactor);
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
@@ -182,7 +182,7 @@ namespace Bev.Instruments.P9710.Detector
                 string asBinary = Convert.ToString(ram[i], 2).PadLeft(8, '0');
                 char asChar = Convert.ToChar(ram[i]);
                 if (ram[i] < 32 || ram[i] > 126)
-                    asChar = ' ';
+                    asChar = nonPrinteableChar;
                 sb.AppendLine($"{i,4} {i:X3} -> {ram[i],3} {ram[i]:X2} {asBinary} '{asChar}'");
             }
             return sb.ToString();
@@ -237,7 +237,10 @@ namespace Bev.Instruments.P9710.Detector
 
         private void LockDevice()
         {
-            _ = Query("RA0000");
+            if (secretCode == 0)
+                _ = Query("RA0001");
+            else
+                _ = Query("RA0001");
         }
 
         private void SetPointer(int pointer)
