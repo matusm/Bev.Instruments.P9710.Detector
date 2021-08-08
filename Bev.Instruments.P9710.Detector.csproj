@@ -36,6 +36,7 @@
     <Compile Include="DetectorStatus.cs" />
     <Compile Include="P9710Detector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DumpDescriptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

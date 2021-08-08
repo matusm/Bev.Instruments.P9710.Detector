@@ -183,8 +183,9 @@ namespace Bev.Instruments.P9710.Detector
                 char asChar = Convert.ToChar(ram[i]);
                 if (ram[i] < 32 || ram[i] > 126)
                     asChar = nonPrinteableChar;
-                sb.AppendLine($"{i,4} {i:X3} -> {ram[i],3} {ram[i]:X2} {asBinary} '{asChar}'");
+                sb.AppendLine($"{i,4} {i:X3} -> {ram[i],3} {ram[i]:X2} {asBinary} '{asChar}'   {DumpDescription.ForLine(i)}");
             }
+
             return sb.ToString();
         }
 
@@ -238,7 +239,9 @@ namespace Bev.Instruments.P9710.Detector
         private void LockDevice()
         {
             if (secretCode == 0)
+#pragma warning disable CS0162 // Unreachable code detected
                 _ = Query("RA0001");
+#pragma warning restore CS0162 // Unreachable code detected
             else
                 _ = Query("RA0001");
         }
