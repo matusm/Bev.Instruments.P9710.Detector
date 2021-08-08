@@ -1,8 +1,7 @@
 ﻿#nullable enable
-
 namespace Bev.Instruments.P9710.Detector
 {
-    public record DetectorStatus
+    public record DetectorStatus()
     {
         public string? DetectorName { get; set; } = null;
         public int? SerialNumber { get; set; } = null;

@@ -81,7 +81,7 @@ namespace Bev.Instruments.P9710.Detector
         {
             if (unitCode < 0)
                 return;
-            if (unitCode > 24)
+            if (unitCode > 0xFFF)
                 return;
             byte flags = GetByte(53);
             // set bit0 to 1 and leave the rest unchanged
