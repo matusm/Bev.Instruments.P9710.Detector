@@ -1,4 +1,6 @@
-﻿namespace Bev.Instruments.P9710.Detector
+﻿#nullable enable
+
+namespace Bev.Instruments.P9710.Detector
 {
     public class DetectorStatus
     {
@@ -41,7 +43,7 @@
                     case 22: return "sb";
                     case 23: return "L";
                     case 24: return "nit";
-                    default: return string.Empty;
+                    default: return $"<{code} undefined>";
                 }
 
             }
