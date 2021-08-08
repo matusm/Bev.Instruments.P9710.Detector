@@ -7,7 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Bev.Instruments.P9710.Detector</RootNamespace>
     <AssemblyName>Bev.Instruments.P9710.Detector</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

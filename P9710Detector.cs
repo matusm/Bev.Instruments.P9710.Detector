@@ -20,6 +20,21 @@ namespace Bev.Instruments.P9710.Detector
 
         public string DevicePort { get; }
 
+        public void WriteDetectorStatusToRam(DetectorStatus detectorStatus)
+        {
+            WriteIdentificationStringToRam();
+            if (detectorStatus.SerialNumber is int sn)
+                WriteSerialNumberToRam(sn);
+            if (detectorStatus.DetectorName is string dn)
+                WriteDetectorNameToRam(dn);
+            if (detectorStatus.CalibrationFactor is double cf)
+                WriteCalibrationFactorToRam(cf);
+            if (detectorStatus.PhotometricUnit is int pu)
+                WriteUnitToRam(pu);
+            if (detectorStatus.CustomString is string cs)
+                WriteCustomStringToRam(cs);
+        }
+
         public void WriteIdentificationStringToRam()
         {
             WriteStringToRam("PT9610", 0);
@@ -30,7 +45,7 @@ namespace Bev.Instruments.P9710.Detector
             if (serialNumber < 0) return;
             if (serialNumber >= 0xFFFF) return;
             byte[] bytes = BitConverter.GetBytes(serialNumber);
-            if (!BitConverter.IsLittleEndian) 
+            if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
             if (bytes.Length < 2) return;
             SetPointer(6);
@@ -99,7 +114,7 @@ namespace Bev.Instruments.P9710.Detector
         {
             return RamToString(DumpDetectorRam());
         }
-        
+
         // dangerous method!
         public void SaveRamToEeprom()
         {
