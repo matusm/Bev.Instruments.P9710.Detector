@@ -14,7 +14,36 @@
         {
             if (photometricUnit is int code)
             {
-                return NewMethod(code);
+                switch (code)
+                {
+                    case 0: return "W";
+                    case 1: return "W/m2";
+                    case 2: return "W/sr";
+                    case 3: return "W/m2/sr";
+                    case 4: return "lm";
+                    case 5: return "lx";
+                    case 6: return "cd";
+                    case 7: return "cd/m2";
+                    case 8: return "MED/h";
+                    case 9: return "mol/m2/s";
+                    case 10: return "A";
+                    case 11: return "cdsr";
+                    case 12: return "lm/sr";
+                    case 13: return "lm/m2";
+                    case 14: return "pc";
+                    case 15: return "fc";
+                    case 16: return "E/m2";
+                    case 17: return "W/cm2";
+                    case 18: return "W/cm2*sr";
+                    case 19: return "lm/cm2";
+                    case 20: return "cdsr/m2";
+                    case 21: return "fL";
+                    case 22: return "sb";
+                    case 23: return "L";
+                    case 24: return "nit";
+                    default: return string.Empty;
+                }
+
             }
             else
             {
@@ -22,34 +51,5 @@
             }
         }
 
-        private static string NewMethod(int code) => code switch
-        {
-            0 => "W",
-            1 => "W/m2",
-            2 => "W/sr",
-            3 => "W/m2/sr",
-            4 => "lm",
-            5 => "lx",
-            6 => "cd",
-            7 => "cd/m2",
-            8 => "MED/h",
-            9 => "mol/m2/s",
-            10 => "A",
-            11 => "cdsr",
-            12 => "lm/sr",
-            13 => "lm/m2",
-            14 => "pc",
-            15 => "fc",
-            16 => "E/m2",
-            17 => "W/cm2",
-            18 => "W/cm2*sr",
-            19 => "lm/cm2",
-            20 => "cdsr/m2",
-            21 => "fL",
-            22 => "sb",
-            23 => "L",
-            24 => "nit",
-            _ => "<undefined code>",
-        };
     }
 }
