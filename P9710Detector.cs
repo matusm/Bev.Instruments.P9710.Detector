@@ -21,7 +21,7 @@ namespace Bev.Instruments.P9710.Detector
 
         public string DevicePort { get; }
 
-        public void WriteDetectorStatusToRam(DetectorStatus detectorStatus)
+        public void WriteDetectorStatusToRam(DetectorSetting detectorStatus)
         {
             WriteIdentificationStringToRam();
             if (detectorStatus.SerialNumber is int sn)
