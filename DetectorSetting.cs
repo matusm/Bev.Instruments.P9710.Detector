@@ -1,4 +1,5 @@
 ﻿#nullable enable
+
 namespace Bev.Instruments.P9710.Detector
 {
     public record DetectorSetting()
@@ -10,6 +11,21 @@ namespace Bev.Instruments.P9710.Detector
         public string? CustomString { get; set; } = null;
 
         public string PhotometricUnitSymbol => CodeToString(PhotometricUnit);
+        public bool IsNullOrEmpty => isNullOrEmpty();
+
+        private bool isNullOrEmpty()
+        {
+            if (SerialNumber != null) return false;
+            if (CalibrationFactor != null) return false;
+            if (PhotometricUnit != null) return false;
+            if (DetectorName != null)
+                if (!string.IsNullOrEmpty(DetectorName))
+                    return false;
+            if (CustomString != null)
+                if (!string.IsNullOrEmpty(CustomString))
+                    return false;
+            return true;
+        }
 
         private string CodeToString(int? photometricUnit)
         {
