@@ -212,7 +212,7 @@ namespace Bev.Instruments.P9710.Detector
 
         private void WriteStringToRam(string stringToWrite, int pointer)
         {
-            if (string.IsNullOrWhiteSpace(stringToWrite))
+            if (string.IsNullOrEmpty(stringToWrite))
                 return;
             byte[] bytes = Encoding.ASCII.GetBytes(stringToWrite);
             WriteBytesToRam(bytes, pointer);
