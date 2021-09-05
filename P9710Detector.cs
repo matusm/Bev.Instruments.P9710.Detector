@@ -1,25 +1,15 @@
 ﻿using System;
-using System.IO.Ports;
 using System.Text;
-using System.Threading;
 
 namespace Bev.Instruments.P9710.Detector
 {
-    public class P9710Detector
+    public class P9710Detector : P9710
     {
         private const int secretCode = 9957;    // this password was found by brute force
         private const int blockSize = 64;
-        private readonly SerialPort comPort;
-        private const int waitOnClose = 100;
         private char nonPrinteableChar = ' ';
 
-        public P9710Detector(string portName)
-        {
-            DevicePort = portName.Trim();
-            comPort = new SerialPort(DevicePort, 9600);
-        }
-
-        public string DevicePort { get; }
+        public P9710Detector(string portName) : base(portName){}
 
         public void WriteDetectorStatusToRam(DetectorSetting detectorStatus)
         {
@@ -122,6 +112,12 @@ namespace Bev.Instruments.P9710.Detector
             UnlockDevice();
             _ = Query($"SE{blockSize}");
             LockDevice();
+        }
+
+        // expose P9710.Query() for experiments
+        public new string Query(string command)
+        {
+            return base.Query(command);
         }
 
         private void WriteCalibrationFactorToRam(double mantissa, int exponent)
@@ -253,49 +249,6 @@ namespace Bev.Instruments.P9710.Detector
             if (pointer > 0x800)
                 return;
             _ = Query($"SP{pointer}");
-        }
-
-        private string Query(string command)
-        {
-            string answer = "???";
-            OpenPort();
-            try
-            {
-                comPort.WriteLine(command);
-                answer = comPort.ReadLine();
-            }
-            catch (Exception)
-            {
-                // just do nothing
-            }
-            ClosePort();
-            Thread.Sleep(waitOnClose);
-            return answer;
-        }
-
-        private void OpenPort()
-        {
-            try
-            {
-                if (!comPort.IsOpen)
-                    comPort.Open();
-            }
-            catch (Exception)
-            { }
-        }
-
-        private void ClosePort()
-        {
-            try
-            {
-                if (comPort.IsOpen)
-                {
-                    comPort.Close();
-                    Thread.Sleep(waitOnClose);
-                }
-            }
-            catch (Exception)
-            { }
         }
 
     }
